@@ -1,0 +1,64 @@
+<!-- Alert container -->
+<div id="alertContainer"></div>
+<br>
+<form id="myForm" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="text" name="name" placeholder="Name"><br><br>
+    Image
+    <input type="file" name="image"><br><br>
+    Video
+    <input type="file" name="video"><br><br>
+    <button type="button" id="submitBtn">Submit</button>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Add the Bootstrap CSS and JS files to your HTML -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#submitBtn').click(function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            var form = $('#myForm')[0];
+            var formData = new FormData(form);
+
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'save_form' %}", // Replace with your backend URL
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    console.log(response); // Handle the JSON response
+
+                    // Clear input fields when data is saved
+                    $('#myForm')[0].reset();
+
+                    // Show custom 3-second alert with Bootstrap alert component
+                    var message = "Data saved successfully.";
+                    showAlert(message, 'success', 3000);
+
+                    // You can perform additional actions based on the response
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr.responseText); // Handle the error
+                }
+            });
+        });
+
+        // Function to show a temporary alert message
+        function showAlert(message, type, duration) {
+            var alertDiv = $('<div class="alert alert-' + type + ' alert-dismissible fade show" role="alert">' + message +
+                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
+
+            $('#alertContainer').append(alertDiv);
+
+            setTimeout(function () {
+                alertDiv.alert('close');
+            }, duration);
+        }
+    });
+
+</script>
