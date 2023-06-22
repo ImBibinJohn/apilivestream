@@ -1,0 +1,30 @@
+<!-- stream_data.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stream Data</title>
+</head>
+<body>
+    <h1>Stream Data</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Timestamp</th>
+                <th>Video URL</th>
+                <th>Audio URL</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in stream_data %}
+            <tr>
+                <td>{{ data.id }}</td>
+                <td>{{ data.timestamp }}</td>
+                <td>{{ data.video_url }}</td>
+                <td>{{ data.audio_url }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

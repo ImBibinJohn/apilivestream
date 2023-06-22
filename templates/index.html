@@ -1,21 +1,41 @@
-<!-- Alert container -->
-<div id="alertContainer"></div>
-<br>
-<form id="myForm" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="text" name="name" placeholder="Name"><br><br>
-    Image
-    <input type="file" name="image"><br><br>
-    Video
-    <input type="file" name="video"><br><br>
-    <button type="button" id="submitBtn">Submit</button>
-</form>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Add the Bootstrap CSS and JS files to your HTML -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
+<style>
+    .center-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .form-wrapper {
+        border: 2px solid black;
+        padding: 20px;
+        border-radius: 10px;
+    }
+</style>
+
+<div class="center-container">
+    <div class="form-wrapper">
+        <!-- Alert container -->
+        <div id="alertContainer"></div>
+        <center><strong>Live Control</strong></center>
+        <br>
+        <form id="myForm" enctype="multipart/form-data">
+            {% csrf_token %}
+            <a href="{% url 'save_form' %}" id="submitBtn" class="btn btn-primary">Submit</a>
+            <a href="{% url 'redirection' %}" id="submitBtn1" class="btn btn-secondary">Another Link</a>
+            <a href="{% url 'show_video' %}" id="submitBtn2" class="btn btn-secondary">Show Preview</a>
+            <a href="{% url 'extract_rtmp_data' %}" id="submitBtn3" class="btn btn-secondary">Live View</a>
+        </form>
+        <center><span id="randomStringSpan"></span></center><br>
+        <center><div id="videoContainer"></div></center>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
         $('#submitBtn').click(function (e) {
@@ -61,4 +81,91 @@
         }
     });
 
+</script>
+<script>
+    $(document).ready(function () {
+        $('#submitBtn1').click(function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            var form = $('#myForm')[0];
+            var formData = new FormData(form);
+
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'redirection' %}", // Replace with your backend URL
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    console.log(response); // Handle the JSON response
+
+                    // Clear input fields when data is saved
+                    $('#myForm')[0].reset();
+
+                    // Show custom 3-second alert with Bootstrap alert component
+                    var message = response.message;
+                    // showAlert(message, 'success', 3000);
+
+                    // Set the random_string value within a span
+                    $('#randomStringSpan').text(message);
+
+                    // You can perform additional actions based on the response
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr.responseText); // Handle the error
+                }
+            });
+        });
+
+        function showAlert(message, alertType, duration) {
+            var alertClass;
+            switch (alertType) {
+                case 'success':
+                    alertClass = 'alert-success';
+                    break;
+                case 'error':
+                    alertClass = 'alert-danger';
+                    break;
+                case 'info':
+                    alertClass = 'alert-info';
+                    break;
+                default:
+                    alertClass = 'alert-secondary';
+            }
+
+            var alert = $('<div class="alert ' + alertClass + ' alert-dismissible fade show" role="alert">' +
+                message +
+                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                '</div>');
+
+            $('#alertContainer').append(alert);
+
+            setTimeout(function () {
+                alert.alert('close');
+            }, duration);
+        }
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#submitBtn2').click(function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'show_video' %}", // Replace with your backend URL
+                success: function (response) {
+                    console.log(response); // Handle the HTML response
+
+                    // Replace the content of the form-wrapper div with the video HTML
+                    $('#videoContainer').html(response);
+
+                    // You can perform additional actions based on the response
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr.responseText); // Handle the error
+                }
+            });
+        });
+    });
 </script>
