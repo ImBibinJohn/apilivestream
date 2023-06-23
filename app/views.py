@@ -12,26 +12,31 @@ def index(request):
 
 def save_form(request):
     if request.method == 'POST':
-        name = request.POST.get('name')
-        image = request.FILES.get('image')
-        video = request.FILES.get('video')
+        if request.POST.get('name') == "" or request.FILES.get('image') is None or request.FILES.get('video') is None:
+            return JsonResponse({'success': False, 'message': 'Fill All Fields'})
+        else:
+            name = request.POST.get('name')
+            image = request.FILES.get('image')
+            video = request.FILES.get('video')
 
-        # Perform database operations here to save the form data
-        save_db = Item.objects.create(name=name, image=image, video=video)
+            # Perform database operations here to save the form data
+            save_db = Item.objects.create(name=name, image=image, video=video)
 
-        # Return a JSON response
-        return JsonResponse({'message': 'Form data saved successfully.'})
+            # Return a JSON response
+            return JsonResponse({'success': True, 'message': 'Form data saved successfully.'})
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid Request Type'})
+
 
 def redirection(request):
     url = 'rtmp://localhost:1935/live/test'
-    return JsonResponse({'message': url})
+    return JsonResponse({'success':True,'message': url})
 
 def show_video(request):
-    video = Item.objects.get(id=3) # Get video object
-    video_url = str(video.video) # Assuming 'url' is the attribute containing the video URL
-    print(video_url)
-    print('<video src="' + video_url + '" controls></video>')
-    return HttpResponse('<video src="' + video_url + '" controls></video>')
+    video = Item.objects.latest('id')
+    video_url = "/media/" + str(video.video) # Assuming 'url' is the attribute containing the video URL
+    print('video_url : ',video_url)
+    return HttpResponse('<video src="' + video_url + '" controls width="400" height="280"></video>')
 
 
 
