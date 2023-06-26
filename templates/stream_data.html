@@ -1,4 +1,3 @@
-<!-- stream_data.html -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,25 +5,13 @@
 </head>
 <body>
     <h1>Stream Data</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Timestamp</th>
-                <th>Video URL</th>
-                <th>Audio URL</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for data in stream_data %}
-            <tr>
-                <td>{{ data.id }}</td>
-                <td>{{ data.timestamp }}</td>
-                <td>{{ data.video_url }}</td>
-                <td>{{ data.audio_url }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% if stream_data %}
+        <h2>Latest Stream Data:</h2>
+        <p>Timestamp: {{ stream_data.timestamp }}</p>
+        <p>Video URL: {{ stream_data.video_url }}</p>
+        <p>Audio URL: {{ stream_data.audio_url }}</p>
+    {% else %}
+        <p>No stream data available.</p>
+    {% endif %}
 </body>
 </html>

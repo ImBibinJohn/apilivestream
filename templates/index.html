@@ -37,8 +37,8 @@
             <button id="opnBtn" class="btn btn-primary">Create</button>
             <button id="submitBtn1" class="btn btn-secondary">Show Link</button>
             <button id="submitBtn2" class="btn btn-secondary">Show Preview</button>
-            <button id="submitBtn3" class="btn btn-secondary">Live View</button>
         </form>
+        <a href="{% url 'extract_rtmp_data' %}"><button class="btn btn-danger">Live View</button></a>
         <center>
             <div id="videoContainer"></div>
         </center>
@@ -183,5 +183,30 @@
                 }
             });
         });
+
+        // $('#submitBtn3').click(function (e) {
+        //     e.preventDefault(); // Prevent default form submission
+
+        //     $.ajax({
+        //         type: 'GET',
+        //         url: "{% url 'extract_rtmp_data' %}", // Replace with your backend URL
+        //         success: function (response) {
+        //             console.log(response);
+
+        //             // Replace the content of the videoContainer div with the video HTML
+        //             $('#videoContainer').html(response);
+
+        //             // Perform additional actions based on the response
+        //         },
+        //         error: function (xhr, status, error) {
+        //             console.log(xhr.responseText);
+
+        //             // Show error alert with a 3-second duration
+        //             showAlert('An error occurred.', 'error', 3000);
+
+        //             // Handle the error
+        //         }
+        //     });
+        // });
     });
 </script>
